@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+            background-color: #f0f8ff;
+            transition: background-color 1s ease;
+        }
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.4s ease;
+            border: none;
+            border-radius: 5px;
+        }
+        #yes-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #no-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .hidden {
+            display: none;
+        }
+        #result-title {
+            font-size: 48px;
+            margin-top: 50px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="question">ხვალ სასეირნოდ წამოხვალ?</div>
+    <button id="yes-btn">კი</button>
+    <button id="no-btn">არა</button>
+    <div id="result-title"></div>
+
+    <script>
+        const noButton = document.getElementById("no-btn");
+        const yesButton = document.getElementById("yes-btn");
+        const questionDiv = document.getElementById("question");
+        const resultTitle = document.getElementById("result-title");
+        let noButtonClicks = 0;
+        let warningMessageDisplayed = false;
+
+        // Move the "არა" button within a 300px range
+        function moveNoButton() {
+            const randomX = Math.random() * 300 - 150; // Range: -150 to +150
+            const randomY = Math.random() * 300 - 150; // Range: -150 to +150
+
+            noButton.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+
+        // Handle "არა" button click
+        noButton.addEventListener("click", () => {
+            if (noButtonClicks < 2) {
+                noButtonClicks++;
+            } else {
+                submitAnswer("არა");
+            }
+        });
+
+        // Handle touchstart (mobile) and mouseover (desktop)
+        function handleMove(event) {
+            if (noButtonClicks < 2) {
+                moveNoButton();
+                event.preventDefault(); // Prevent accidental clicks/taps
+            }
+            if (!warningMessageDisplayed) {
+                warningMessageDisplayed = true;
+                questionDiv.textContent = "არ დამაჭირო!";
+            }
+        }
+
+        // Handle hover for desktop
+        noButton.addEventListener("mouseover", handleMove);
+
+        // Handle touchstart for mobile
+        noButton.addEventListener("touchstart", handleMove);
+
+        // Handle "კი" button click
+        yesButton.addEventListener("click", () => {
+            submitAnswer("კი");
+        });
+
+        // Submit the answer
+        function submitAnswer(answer) {
+            // Hide the buttons
+            noButton.classList.add("hidden");
+            yesButton.classList.add("hidden");
+
+            // Change background and show result title
+            if (answer === "კი") {
+                document.body.style.backgroundColor = "green";
+                resultTitle.textContent = "მინდოდა ისე გამეკეთებინა რომ პასუხი ფოსტაზე მომვსლოდა მაგრამ ჯერ მარტო Front-end-ზე ვარ და ძალიან გთხოვ მომწერე";
+            } else if (answer === "არა") {
+                document.body.style.backgroundColor = "red";
+                resultTitle.textContent = ":(";
+            }
+            resultTitle.style.display = "block";
+
+            // Simulate sending an email with mailto
+            const email = "your-email@example.com"; // Replace with your email
+            const subject = "პასუხი კითხვაზე";
+            const body = `პასუხი კითხვაზე: ${answer}`;
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+    </script>
+</body>
+</html>
